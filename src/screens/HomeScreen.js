@@ -11,7 +11,7 @@ import {
   Linking,
   Easing
 } from "react-native";
-
+import logo from "../assets/social-auth-logo.png"
 
 const HomeScreen = ({ onPress, navigation, event }) => {
 
@@ -30,7 +30,7 @@ const HomeScreen = ({ onPress, navigation, event }) => {
               height: 50,
               top: 0,
             }}
-            source={require("../assets/biz4Biz-icon-logo.png")}
+            source={logo}
           />
         </View>
 

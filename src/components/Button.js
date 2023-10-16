@@ -19,15 +19,18 @@ const Button = ({ navigation, text, screen, color, textColor, url }) => {
 
 const styles = StyleSheet.create({
   buttonStyle: {
-    alignSelf: "center",
-    backgroundColor: "#001F3F",
+    backgroundColor: "#000000",
     paddingVertical: 15,
     paddingHorizontal: 25,
     borderRadius: 40,
+    width: "100%",
+    alignItems: "center",
   },
   textStartedStyle: {
+    alignItems: "center",
     fontSize: 14,
     color: "#151515",
+    fontWeight: "600",
   },
 });
 

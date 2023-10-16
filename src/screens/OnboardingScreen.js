@@ -3,9 +3,7 @@ import {
   View,
   SafeAreaView,
   Text,
-  // Button,
   Image,
-  ImageBackground,
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
@@ -13,13 +11,10 @@ import Swiper from "react-native-swiper";
 import Images from "../assets/onboarding";
 import Button from "../components/Button";
 import { useFonts } from 'expo-font';
+import Socials from "../components/Socials";
+import logo from "../assets/social-auth-logo.png"
 
 const OnboardingScreen = ({ onPress, navigation }) => {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleNext = () => {
-    navigation.navigate('RegisterScreen');
-  };
 
   const [fontsLoaded] = useFonts({
     Recoleta: require('../assets/fonts/Recoleta-Regular.ttf'),
@@ -30,81 +25,15 @@ const OnboardingScreen = ({ onPress, navigation }) => {
     return null;
   }
 
-  const onboardingList = [
-    {
-      id: 1,
-      subtitle: "Providing business networking,\nmarketing, advice and sustainability support\nfor SMEs in the east of England, and so much more.",
-      title: "Simplify your business\njourney with biz4Biz",
-      image: Images.luxidriver,
-    },
-    // {
-    //   id: 2,
-    //   title: "Simplify your business \njourney with biz4Biz",
-    //   subtitle: "Providing business networking,\nmarketing, advice and sustainability \nsupport for SMEs in the east of England.",
-    //   image: Images.luxidriver,
-    // },
-    // {
-    //   id: 3,
-    //   title: "Simplify your business \njourney with biz4Biz",
-    //   subtitle: "Providing business networking, \nmarketing, advice and sustainability \nsupport for SMEs in the east of England.",
-    //   image: Images.luxidriver,
-    // },
-    // { id: 2, title: "Send parcels with ease", image: Images.taxi },
-  ];
-
   return (
-    <View 
-      style={{ 
-        flex: 1, 
-        backgroundColor: "#259BD8",
-        // padding: 5,
-        flexDirection: 'column',
-        justifyContent: 'center' }}>
-    {/* <ImageBackground source={image} resizeMode="cover" style={styles.backgroundimage}> */}
-    <Image
-        style={{
-          alignSelf: 'center',
-          width: '20%',
-          height: '5%',
-          top: 25
-        }}
-        source={require('../assets/biz4Biz-icon-logo.png')}
-      />
-      <Swiper
-        paginationStyle={{
-          // position: "absolute",
-          bottom: 60,
-          // flex: 1,
-          // top: 450,
-          // right: 300
-        }}
-        activeDotColor="#191721"
-        activeDotStyle={{ width: 20, height: 8 }}
-        autoplay
-      >
-        {onboardingList.map((i) => {
-          return (
-            <View
-              key={i.id}
-              style={{
-                justifyContent: "center",
-                alignItems: "center",
-                // height: "100%",
-                // position: "absolute" 
-              }}
-            >
-              <Image style={styles.imageContainer} source={i.image} />
-              <Text style={styles.subtitleStyle}>{i.subtitle}</Text>
-              <Text style={[styles.textStyle, { fontFamily: 'Recoleta' }]}>{i.title}</Text>
-            </View>
-          );
-        })}
-        
-      </Swiper>
-
+    <View style={styles.container}>
+      <Image style={styles.logo} source={logo}/>
+      
+      <Socials/>
+      
       <View
         style={{
-          // position: "absolute",
+          position: "absolute",
           bottom: "4%",
           left: 0,
           right: 0,
@@ -112,30 +41,19 @@ const OnboardingScreen = ({ onPress, navigation }) => {
           alignItems: "center",
         }}
       >
-        {/* <Icon navigation={navigation} screen="LoginScreen" icon="ios-arrow-forward" color="#ffffff" iconColor="#259BD8"/> */}
-        {/* <Button navigation={navigation} text="Press to Open" screen="HomeScreen" color="#ffffff" textColor="#259BD8" /> */}
-        <TouchableOpacity
-            style={styles.buttonStyle}
-            onPress={() =>
-              navigation.navigate("auth", { screen: "HomeScreen" })
-            }
-          >
-            {isLoading ? (
-              <ActivityIndicator size="small" color="#ffffff" />
-              ) : (
-              <Text style={styles.textStartedStyle}>Press to Open</Text>
-            )}
-          </TouchableOpacity>
-        
-        {/* <Button navigation={navigation} text="Sign Up" screen="RegisterScreen" color="#ffffff" textColor="#259BD8" />
-        <Button navigation={navigation} text="Login" screen="LoginScreen" color="#ffffff" textColor="#259BD8" /> */}
-
-        {/* <Icon icon="ios-arrow-forward"/> */}
+        <Text style={styles.subtitleStyle}>Unlock Your World with a Single Tap! 🌏✨ Sign in effortlessly and explore a world of connected experiences with our Social Authentication App. 🚀🔒 #SignInSimplified #ConnectedJourney</Text>
+        <Text style={[styles.textStyle, { fontFamily: 'Recoleta' }]}>Social Authentication</Text>
+        {/* <View style={styles.buttonStyle}>
+          <Button navigation={navigation} text="Login" screen="LoginScreen" color="#ffffff" textColor="#000000" />
+        </View>
+        <View style={styles.buttonStyle}>
+          <Button navigation={navigation} text="Sign Up" screen="RegisterScreen" color="#ffffff" textColor="#000000" />
+        </View> */}
 
         <View style={{bottom: 0}}>
           <Text style={styles.textTermsStyle}>
               {" "}
-              v0.0.25
+              v0.0.1
           </Text>
         </View>
       </View>
@@ -145,6 +63,24 @@ const OnboardingScreen = ({ onPress, navigation }) => {
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1, 
+    backgroundColor: "#000000",
+    flexDirection: 'column',
+    justifyContent: 'center'
+  },
+  logo: {
+    alignSelf: 'center',
+    position: "absolute",
+    width: 70,
+    height: 70,
+    top: 40
+  },
+  middle: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center"
+  },
   backgroundimage: {
     flex: 1,
     justifyContent: "center",
@@ -170,29 +106,14 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     height: 400,
-    width: "100%",
+    width: "80%",
     resizeMode: "contain",
   },
-  // buttonStyle: {
-  //   backgroundColor: "#ffffff",
-  //   // paddingHorizontal: 50,
-  //   justifyContent: "center",
-  //   alignItems: "center",
-  //   paddingVertical: 18,
-  //   borderRadius: 30,
-  //   marginBottom: 10,
-  //   width: "70%",
-  // },
   buttonStyle: {
-    backgroundColor: "#ffffff",
-    justifyContent: "center",
-    alignItems: "center",
-    paddingVertical: 18,
-    borderRadius: 30,
     marginBottom: 10,
     width: "85%",
   },
-  textStartedStyle: {
+  textButtonStyle: {
     fontWeight: "600",
     fontSize: 15,
     color: "#259BD8",
@@ -206,7 +127,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: "center",
     color: "#ffffff"
-    // width: 350
   },
 });
 

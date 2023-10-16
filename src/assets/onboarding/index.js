@@ -1,5 +1,5 @@
 const onboardingImages = {
-    luxidriver:require('./dispatch.png'),
+    onboarding:require('./socials.png'),
     // taxi:require('./taxidriver.png'),
 }
 

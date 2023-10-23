@@ -9,11 +9,45 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
+  NativeModules,
 } from "react-native";
 
 import { useNavigation } from "@react-navigation/native";
 import TextInput from "../../components/TextInput";
-import { ArrowLeft } from 'iconsax-react-native';
+import { ArrowLeft } from "iconsax-react-native";
+import {
+  GoogleSignin,
+  statusCodes,
+} from "@react-native-google-signin/google-signin";
+import {
+  Settings,
+  LoginButton,
+  AccessToken,
+  LoginManager,
+  Profile,
+  GraphRequest,
+  GraphRequestManager,
+  AuthenticationToken,
+} from "react-native-fbsdk-next";
+
+const { RNTwitterSignIn } = NativeModules;
+
+// ios ClientID = 1086447436205-c3n3hvm0m8i3dibbvia7kbba185ijps7.apps.googleusercontent.com
+// android = 1086447436205-3nurs9ar1ljv3nfff36a2rehrunt12tn.apps.googleusercontent.com
+//twitter clientID = bmxGN0EzSjFzOENkT0lzcUdhWU06MTpjaQ
+//twitter client secret = CjzE6WuKr2ZgZBryVnf5WYn9JurvJgBL2aKcqmo-yQ2bjbiWvY
+//twitter api key = aPEuYidcx6Oeses3NeARMMmY2
+//twitter aoi secret = COan1XQ7ImEn4IotwbgOP0GAarKUOmm4D9dAcphF524g1onNl1
+//faceboo app id 1389198861945792
+
+GoogleSignin.configure({
+  androidClientId:
+    "1086447436205-3nurs9ar1ljv3nfff36a2rehrunt12tn.apps.googleusercontent.com",
+  iosClientId:
+    "1086447436205-c3n3hvm0m8i3dibbvia7kbba185ijps7.apps.googleusercontent.com",
+});
+
+Settings.setAppID("1389198861945792");
 
 const DismissKeyboard = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -21,13 +55,27 @@ const DismissKeyboard = ({ children }) => (
   </TouchableWithoutFeedback>
 );
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({ navigation }) => {
   // const navigation = useNavigation();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const loginTwitter = () => {
+    RNTwitterSignIn.init(
+      "aPEuYidcx6Oeses3NeARMMmY2",
+      "COan1XQ7ImEn4IotwbgOP0GAarKUOmm4D9dAcphF524g1onNl1"
+    );
+    RNTwitterSignIn.logIn()
+      .then((loginData) => {
+        console.log(loginData, "this is the login data");
+      })
+      .catch((error) => {
+        console.log(error?.message);
+      });
+  };
 
   const handleLogin = () => {
     const dummyEmail = "dummy@example.com";
@@ -44,6 +92,9 @@ const LoginScreen = ({navigation}) => {
     // setError("");
     // login({ email, password });
   };
+  const signIn = (e) => {
+    console.log(e, "the sign lagos");
+  };
 
   return (
     <DismissKeyboard>
@@ -52,14 +103,20 @@ const LoginScreen = ({navigation}) => {
           flex: 1,
         }}
       >
-        <View style={{marginTop: 30}}>
-          <TouchableOpacity onPress={() => navigation.navigate("OnboardingScreen")} style={{position: "absolute", paddingHorizontal: 20, top: 0, left: 5}}>
+        <View style={{ marginTop: 30 }}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate("OnboardingScreen")}
+            style={{
+              position: "absolute",
+              paddingHorizontal: 20,
+              top: 0,
+              left: 5,
+            }}
+          >
             <ArrowLeft color="#000" size={24} />
           </TouchableOpacity>
-          
-          <Text style={styles.textLoginStyle}>
-            Welcome back!{"\n"}
-          </Text>
+
+          <Text style={styles.textLoginStyle}>Welcome back!{"\n"}</Text>
           <Text style={styles.textLoginSubStyle}>
             Enter your email address to login into your account.
           </Text>
@@ -70,7 +127,7 @@ const LoginScreen = ({navigation}) => {
               paddingHorizontal: 30,
               marginBottom: 16,
               marginTop: 80,
-              alignItems: "center"
+              alignItems: "center",
             }}
           >
             <TextInput
@@ -96,7 +153,7 @@ const LoginScreen = ({navigation}) => {
             }}
           >
             <TextInput
-              icon='lock-closed-outline'
+              icon="lock-closed-outline"
               placeholder="Password"
               secureTextEntry
               autoCompleteType="password"
@@ -119,14 +176,69 @@ const LoginScreen = ({navigation}) => {
 
           <TouchableOpacity
             style={styles.buttonStyle}
-            onPress={() =>
-              navigation.navigate("auth", { screen: "HomeScreen" })
-            }
+            onPress={async () => {
+              const user = await GoogleSignin.signIn();
+              console.log(user, "the sign uin");
+              // navigation.navigate("auth", { screen: "HomeScreen" })
+            }}
           >
             {isLoading ? (
               <ActivityIndicator size="small" color="#ffffff" />
-              ) : (
-              <Text style={styles.textStartedStyle}>Login</Text>
+            ) : (
+              <Text style={styles.textStartedStyle}>Login with Google</Text>
+            )}
+          </TouchableOpacity>
+          <LoginButton
+            publishPermissions={["publish_actions"]}
+            onLoginFinished={(error, result) => {
+              if (error) {
+                console.log("login has error: " + result.error);
+              } else if (result.isCancelled) {
+                console.log("login is cancelled.");
+              } else {
+                AccessToken.getCurrentAccessToken().then((data) => {
+                  console.log(data.accessToken.toString());
+                });
+              }
+            }}
+            onLogoutFinished={() => console.log("logout.")}
+          />
+          <TouchableOpacity
+            style={styles.buttonStyle}
+            onPress={async () => {
+              LoginManager.logInWithPermissions(["public_profile"]).then(
+                async function (result) {
+                  if (result.isCancelled) {
+                    console.log("Login cancelled");
+                  } else {
+                    const token = await AccessToken.getCurrentAccessToken();
+                    console.log(token.accessToken, "the token ");
+
+                    const response = await fetch(
+                      `https://graph.facebook.com/me?fields=id,first_name,last_name,email&access_token=${token.accessToken}`
+                    );
+                    const res = await response.json();
+                    console.log(res, "the response");
+                  }
+                },
+                function (error) {
+                  console.log("Login fail with error: " + error);
+                }
+              );
+            }}
+          >
+            {isLoading ? (
+              <ActivityIndicator size="small" color="#ffffff" />
+            ) : (
+              <Text style={styles.textStartedStyle}>Login with Facebook</Text>
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.buttonStyle} onPress={loginTwitter}>
+            {isLoading ? (
+              <ActivityIndicator size="small" color="#ffffff" />
+            ) : (
+              <Text style={styles.textStartedStyle}>Login with twitter</Text>
             )}
           </TouchableOpacity>
 
@@ -136,10 +248,12 @@ const LoginScreen = ({navigation}) => {
               onPress={() => navigation.navigate("ForgotPasswordScreen")}
             >
               {" "}
-              Forgot password? <Text style={{fontWeight: 600}}>Click here</Text>{" "}
+              Forgot password?{" "}
+              <Text style={{ fontWeight: 600 }}>Click here</Text>{" "}
             </Text>
           </TouchableOpacity>
         </View>
+
         <View style={styles.bottomContainer}>
           <TouchableOpacity>
             <Text
@@ -147,11 +261,11 @@ const LoginScreen = ({navigation}) => {
               onPress={() => navigation.navigate("RegisterScreen")}
             >
               {" "}
-              Don't have an account?? <Text style={styles.signUpText}>Sign Up</Text>{" "}
+              Don't have an account??{" "}
+              <Text style={styles.signUpText}>Sign Up</Text>{" "}
             </Text>
           </TouchableOpacity>
         </View>
-          
       </SafeAreaView>
     </DismissKeyboard>
   );
@@ -167,7 +281,7 @@ const styles = StyleSheet.create({
   },
   error: {
     marginBottom: 10,
-    color: "#F80100"
+    color: "#F80100",
   },
   imageContainer: {
     height: "70%",
@@ -223,7 +337,7 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     fontSize: 12,
     // top: "-110%",
-    bottom: 15
+    bottom: 15,
   },
   textLoginStyle: {
     fontWeight: "bold",
@@ -242,15 +356,15 @@ const styles = StyleSheet.create({
     paddingLeft: 30,
   },
   bottomContainer: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
-    alignItems: 'center',
+    alignItems: "center",
     paddingBottom: 50,
   },
   signUpText: {
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });
 

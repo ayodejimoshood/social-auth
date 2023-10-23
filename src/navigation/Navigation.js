@@ -1,5 +1,11 @@
 import React from "react";
-import { Animated, Dimensions, View, TouchableOpacity, Text } from "react-native";
+import {
+  Animated,
+  Dimensions,
+  View,
+  TouchableOpacity,
+  Text,
+} from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -103,7 +109,7 @@ export const screenNames = {
   register: "RegisterScreen",
   home: "HomeScreen",
   authStack: "AuthStackScreen",
-  webView: "WebViewScreen"
+  webView: "WebViewScreen",
   // notification: "NotificationScreen"
 };
 
@@ -203,11 +209,12 @@ function Navigation() {
         }}
       >
         {/* Your other screens... */}
+        <Stack.Screen name={screenNames.login} component={LoginScreen} />
         <Stack.Screen
           name={screenNames.onboarding}
           component={OnboardingScreen}
         />
-        <Stack.Screen name={screenNames.login} component={LoginScreen} />
+
         <Stack.Screen name={screenNames.register} component={RegisterScreen} />
         <Stack.Screen name={"auth"} component={TabNav} />
       </Stack.Navigator>

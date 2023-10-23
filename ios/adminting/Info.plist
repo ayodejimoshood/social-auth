@@ -2,6 +2,21 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>GIDClientID</key>
+	<string>1086447436205-c3n3hvm0m8i3dibbvia7kbba185ijps7.apps.googleusercontent.com</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+	<dict>
+		<key>CFBundleURLSchemes</key>
+		<array>
+			<string>twitterkit-aPEuYidcx6Oeses3NeARMMmY2</string>
+			<string>com.googleusercontent.apps.1086447436205-c3n3hvm0m8i3dibbvia7kbba185ijps7</string>
+			<string>fb1389198861945792</string>
+		</array>
+	</dict>
+	</array>
+	<key>FacebookClientToken</key>
+	<string>fca8850f31967b111e42ef1fdf7ef84a</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
